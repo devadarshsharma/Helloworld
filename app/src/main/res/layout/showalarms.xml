@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="5dp"
+    android:background="#ffffff"
+    android:id="@+id/RecycleShowAlarm">
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeAlarm"
+        android:text="8:00 AM"
+        android:padding="5dp"
+        android:textSize="15sp"/>
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="17dp"
+        android:layout_toRightOf="@+id/timeAlarm">
+        <TextView
+            android:id="@+id/medanme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="12:01 AM"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/tabletsrecycleview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="1 Tablet(s)"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text=""
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_check"
+        android:padding="5dp"
+        android:layout_alignParentRight="true"/>
+
+    <View
+        android:layout_width="350dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@id/ll"
+        android:layout_alignBottom="@+id/ll"/>
+
+</RelativeLayout>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "275538040097",
+    "firebase_url": "https://pasifikaheartbeat-bc263.firebaseio.com",
+    "project_id": "pasifikaheartbeat-bc263",
+    "storage_bucket": "pasifikaheartbeat-bc263.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275538040097:android:2afc2cbb2b4b3171",
+        "android_client_info": {
+          "package_name": "com.example.helloworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275538040097-1k15ofb7n6ot49odlhm6kaqa7n64tv21.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.helloworld",
+            "certificate_hash": "53d7243b40481e96afb2054694fae0d1c56ef5cf"
+          }
+        },
+        {
+          "client_id": "275538040097-fo7g7e9idn9eceaeh6g2j0d71hs1aeii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWos4iCM-o7xJjZrZIizSiWSyeyWwE0Y4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275538040097-fo7g7e9idn9eceaeh6g2j0d71hs1aeii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

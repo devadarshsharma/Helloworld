@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PillReminderEntryDetails"
+    android:background="#e3e8ef">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tollbardetails">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/pillReminderToolBar">
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
+                    android:id="@+id/collapsibleCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:buttonLeft_drawableTintColor="@android:color/white"
+                    app:buttonRight_drawableTintColor="@android:color/white"
+                    app:expandIconColor="@android:color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:primaryColor="@android:color/holo_red_dark"
+                    app:selectedItem_background="@drawable/circle_white_solid_background"
+                    app:selectedItem_textColor="@android:color/holo_red_dark"
+                    app:textColor="@android:color/white"
+                    app:todayItem_background="@drawable/circle_white_stroke_background"
+                    app:todayItem_textColor="@android:color/white"
+
+                    >
+
+                </com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancelaallalarms"
+                android:text="Cancel All Alarms"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/showAlarmsRecycler"
+                android:padding="7dp"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/showAlarmsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/Time"
+                android:layout_marginTop="100dp">
+                <RelativeLayout
+                    android:id="@+id/ifNoPill"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/collapsibleCalendar">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No Meds added yet!"
+                            android:gravity="center_horizontal"
+                            android:textColor="#2b64bf"
+                            android:textSize="23sp"
+                            android:id="@+id/nomeds"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:text="Tap on the &quot;+&quot; to add your first med"
+                            android:textColor="#737a84"
+                            android:textSize="18sp"
+                            android:padding="10dp"/>
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:clickable="true"
+                    app:srcCompat="@android:drawable/ic_input_add" />
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</RelativeLayout>

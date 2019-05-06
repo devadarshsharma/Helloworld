@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="7dp"
+        android:id="@+id/linearlayoutstartDate">
+
+        <TextView
+            android:id="@+id/MedName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Date"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/Today"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            android:textColor="#8f9093"
+            android:textSize="10sp" />
+
+        <View
+            android:id="@+id/MedDivider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="7dp"
+        android:id="@+id/LLDurationType">
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <RadioButton
+                android:id="@+id/radioButtonEveryday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Everyday"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layoutDirection="rtl"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButtonsSelectedDays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="For X days"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layoutDirection="rtl"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"/>
+
+
+        </RadioGroup>
+
+        <View
+            android:id="@+id/Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="7dp"
+        android:id="@+id/LLDuration">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/durationEdittext"
+            android:hint="Enter Duration"
+            android:inputType="number"
+            />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PillReminderEntryDetails">
+
+    <include layout="@layout/toolbarlayout"
+        android:id="@+id/tollbardetails">
+
+    </include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tollbardetails">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/pillReminderToolBar"
+            android:layout_marginTop="5dp">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/linearlayoutmeds">
+
+                    <TextView
+                        android:id="@+id/MedName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Medication Name"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/UnitName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unit"
+                        android:textColor="#8f9093"
+                        android:textSize="10sp" />
+
+                    <View
+                        android:id="@+id/MedDivider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginTop="10dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/DurationDetails">
+
+                    <TextView
+                        android:id="@+id/Duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Duration"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/DurationDet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No end date"
+                        android:textColor="#8f9093"
+                        android:textSize="10sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/FrequencyofIntake">
+
+                    <TextView
+                        android:id="@+id/Frequncy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Frequency of Intake"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/FrequncyDet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Daily"
+                        android:textColor="#8f9093"
+                        android:textSize="10sp" />
+
+                    <View
+                        android:id="@+id/MedDivider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginTop="10dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ReminderTimes"
+                android:padding="7dp"
+                android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/timerecyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="4dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="7dp"
+                    android:id="@+id/Time">
+
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="85dp"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_add_alarm_black_24dp"
+                        android:padding="5dp"/>
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Add reminder time"
+                        android:padding="5dp"
+                        android:textSize="17sp"/>
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="7dp"
+                android:id="@+id/Frequency">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/FrequencyofDosage">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Dosage"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/DosageDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1 Tablet(s)"
+                        android:textColor="#8f9093"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/RemindEveryLL">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Remind Every"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/remindSpinner"
+                        style="@style/MySpinnerLook"
+                        ></Spinner>
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/FirstIntake">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="First Intake"
+                        android:textColor="#000000"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/firstintakeinhours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="8: 00 AM"
+                        android:textColor="#8f9093"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="7dp"
+                    android:id="@+id/LastIntake">
+
+                    <!-- <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:text="Last Intake"
+                         android:textColor="#000000"
+                         android:textSize="17sp" />
+
+                     <TextView
+                         android:id="@+id/lastintakeinhours"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:text="Tap to select last intake"
+                         android:textColor="#8f9093"
+                         android:textSize="10sp" />
+
+                     <Spinner
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:id="@+id/lastintakeSpinner"></Spinner>
+
+                         -->
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/SavereminderDetails"
+                    android:text="Save "/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</RelativeLayout>

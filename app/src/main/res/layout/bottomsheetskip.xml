@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please indicate why you're skipping this dose."
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:textColor="#000000"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <RadioButton
+            android:id="@+id/Mednotnear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Med isn't near me" />
+
+        <RadioButton
+            android:id="@+id/Forgot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Forgot / busy / asleep" />
+
+        <RadioButton
+            android:id="@+id/ranoutofmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ran out of med" />
+
+        <RadioButton
+            android:id="@+id/Dontneed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Don't need to take this dose" />
+
+        <RadioButton
+            android:id="@+id/sideeffect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Side effects / other health concerns" />
+
+        <RadioButton
+            android:id="@+id/cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Worried about the cost" />
+
+        <RadioButton
+            android:id="@+id/other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Others" />
+    </RadioGroup>
+
+
+</LinearLayout>

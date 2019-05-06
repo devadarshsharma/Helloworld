@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Hello world</string>
+
+
+    <string name="very_severely_underweight">Very Severely Underweight</string>
+    <string name="severely_underweight">Severely Underweight</string>
+    <string name="underweight">Underweight</string>
+    <string name="normal">Normal</string>
+    <string name="overweight">Overweight</string>
+    <string name="obese_class_i">Obese Class I (Moderately Obese)</string>
+    <string name="obese_class_ii">Obese Class II (Severely Obese)</string>
+    <string name="obese_class_iii">Obese Class III (Very Severely Obese)</string>
+    <string name="title_activity_calendar">Calendar</string>
+    <string name="title_activity_intro_slider">IntroSlider</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_basic_setup">BasicSetup</string>
+
+    <string-array name="frequency">
+        <item>Once a day</item>
+        <item>Twice a day</item>
+        <item>3 times a day</item>
+        <item>4 times a day</item>
+        <item>5 times a day</item>
+        <item>6 times a day</item>
+    </string-array>
+
+    <string-array name="unit">
+        <item>Ampoule(s)</item>
+        <item>Application(s)</item>
+        <item>Capsule(s)</item>
+        <item>Drop(s)</item>
+        <item>Gram(s)</item>
+        <item>Injection(s)</item>
+        <item>Milligram(s)</item>
+        <item>Millilitre(s)</item>
+        <item>Piece(s)</item>
+        <item>Suppository</item>
+        <item>Tablet(s)</item>
+        <item>Unit(s)</item>
+    </string-array>
+
+    <string-array name="hours">
+        <item>0.5 hour</item>
+        <item>1 hour</item>
+        <item>1.5 hours</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>4 hours</item>
+        <item>5 hours</item>
+        <item>6 hours</item>
+        <item>7 hours</item>
+        <item>8 hours</item>
+        <item>9 hours</item>
+        <item>10 hours</item>
+        <item>11 hours</item>
+        <item>12 hours</item>
+
+
+
+
+    </string-array>
+
+
+</resources>
