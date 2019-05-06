@@ -109,15 +109,11 @@ public class PHDbHelper extends SQLiteOpenHelper {
     public String getAllDetailsForEveryday(){
         SQLiteDatabase db = this.getReadableDatabase();
 
-
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
 
         String Times = mdformat.format(cal.getTime());
-        Times = "2019-05-11";
-
-//        Cursor d = getAllItems(Times);
-//        counter = d.getCount();
+        Times = "2019-05-08";
 
         String sql = "SELECT a._ID, c.medName,a.alarmMasterID, a.time, max_date, a.timeformatted, a.tablets "+
                 "FROM AlarmDetails a " +
@@ -176,9 +172,6 @@ public class PHDbHelper extends SQLiteOpenHelper {
                 dates.set(Calendar.MINUTE, min);
                 dates.set(Calendar.AM_PM, am_pm);
 
-                Log.d(TAG, "saveEverydayAlarm: hour " + hour);
-                Log.d(TAG, "saveEverydayAlarm: min " +  min);
-
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -209,17 +202,7 @@ public class PHDbHelper extends SQLiteOpenHelper {
 
                 db.insert(PHDbClasses.AlarmDetails.TABLE_NAME, null, ad);
 
-                Log.d(TAG, "saveEverydayAlarm: Day " +  dates.get(Calendar.DAY_OF_MONTH));
-                Log.d(TAG, "saveEverydayAlarm: Month " +  dates.get(Calendar.MONTH));
-                Log.d(TAG, "saveEverydayAlarm: Year " +  dates.get(Calendar.YEAR));
-                Log.d(TAG, "saveEverydayAlarm: Hour " +  dates.get(Calendar.HOUR));
-                Log.d(TAG, "saveEverydayAlarm: Minute " +  dates.get(Calendar.MINUTE));
-                Log.d(TAG, "saveEverydayAlarm: org " +  date);
-                Log.d(TAG, "saveEverydayAlarm: after conversion " +  dates.DATE);
-                Log.d(TAG, "saveEverydayAlarm: time " +  time);
-                Log.d(TAG, "saveEverydayAlarm: date in string " +  DateFormat.format(dates.getTime()));
-                Log.d(TAG, "saveEverydayAlarm: time in string " +  TimeFormat.format(dates.getTime()));
-                Log.d(TAG, "saveEverydayAlarm: time from db striaght in string " +  TimeFormat.format(getTime.getTime()));
+                dates.add(Calendar.DATE, -1*i);
 
                 introManager.setPendingIntent(pendingintentcode+1);
             }

@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
     private LinearLayout durationLL, frequencyLL, dosageLL,FirstIntake, Frequency, linearlayoutmeds;
     private TextView firstintakeinhours, MedName,UnitName, DurationDet, FrequncyDet, DosageDetail;
     private Spinner reminderSpinner, lastintakeSpinner;
-    private int everyday, xdays, xhours, specificdays, comp, name, mealdecison;
+    private int xtimesaday,everyday, xdays, xhours, specificdays, comp, name, mealdecison;
     private int mon,tues, wed, thurs, fri,sat,sun, years, months, days;
     private String startdate, duration, units, company, medname, customText, intakeadvise,remindSpinnerinString;
     private int hour, minut;
@@ -65,11 +66,12 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
     List<Integer> tabletArray;
     private SQLiteDatabase mDatabase;
     int requestCode;
-    String tabvalue;
+    String tabvalue = "1";
     long master_id = 0;
     int isBefore, tabCounter, pendingIntentCounter =  0;
     Calendar Impcalendar = Calendar.getInstance();
     Calendar detailCalendar = Calendar.getInstance();
+    int [] interval = {1,2,3,4,6,8,12};
 
 
 
@@ -129,7 +131,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         adapter = ArrayAdapter.createFromResource(this, R.array.hours, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         reminderSpinner.setAdapter(adapter);
-        reminderSpinner.setSelection(2);
+        reminderSpinner.setSelection(0);
         Frequency.setVisibility(View.GONE);
 
         reminderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,7 +188,12 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAlaram();
+                if(xhours == 1){
+                    calculateIntervalTimes();
+                    setAlaram();
+                }else{
+                    setAlaram();
+                }
                 Intent intentPill = new Intent(PillReminderEntryDetails.this, PillReminder.class);
                 startActivity(intentPill);
             }
@@ -463,7 +470,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
         weekdays.setVisibility(mview.GONE);
 
-        if(everyday == 1){
+        if(xtimesaday == 1){
             xtimesday.setChecked(true);
         }
         else if (xhours == 1){
@@ -504,7 +511,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                 Time.setVisibility(mview.VISIBLE);
                 weekdays.setVisibility(mview.GONE);
                 Frequency.setVisibility(View.GONE);
-                everyday = 1;
+                xtimesaday =1;
                 xhours = 0;
                 specificdays = 0;
                 FrequncyDet.setText("Daily");
@@ -517,8 +524,8 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                 Time.setVisibility(mview.GONE);
                 weekdays.setVisibility(mview.GONE);
                 Frequency.setVisibility(View.VISIBLE);
-                everyday = 0;
                 xhours = 1;
+                xtimesaday =0;
                 specificdays = 0;
                 FrequncyDet.setText("Daily, every X hours");
             }
@@ -530,8 +537,8 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                 Time.setVisibility(mview.VISIBLE);
                 weekdays.setVisibility(mview.VISIBLE);
                 Frequency.setVisibility(View.GONE);
-                everyday = 0;
                 xhours = 0;
+                xtimesaday =0;
                 specificdays = 1;
                 FrequncyDet.setText("Specific Days of Week");
             }
@@ -661,6 +668,62 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         decision = 0;
     }
 
+    public void calculateIntervalTimes(){
+        int index = reminderSpinner.getSelectedItemPosition();
+        Date intervalTime = null;
+        Calendar intervalTimeCov = Calendar.getInstance();
+
+        String time = firstintakeinhours.getText().toString();
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+        DateFormat t4hourformat = new SimpleDateFormat("HH:mm");
+        int hours, minute, hr;
+        int counter = 0;
+        String timeInString = "";
+
+
+        try {
+            intervalTime = formatter.parse(time);
+            intervalTimeCov.setTime(intervalTime);
+            hours = intervalTimeCov.get(Calendar.HOUR);
+            minute = intervalTimeCov.get(Calendar.MINUTE);
+
+            String output = t4hourformat.format(intervalTime);
+
+            counter = 24/interval[index];
+
+            for(int i = 0; i<counter; i++){
+                if (hours >= 24)
+                    hr = hours - 24;
+                else
+                    hr = hours;
+
+                tabletArray.add(Integer.parseInt(tabvalue));
+
+                if(hr > 12){
+                    int hour = hr - 12;
+                    timeInString = String.valueOf(hour) + ":" + String.valueOf(minute) +" PM";
+                }else if (hr == 0){
+                    timeInString = "12:" + String.valueOf(minute) +" AM";
+                }else if(hr == 12)
+                    timeInString = String.valueOf(hr) + ":" + String.valueOf(minute) +" PM";
+                else
+                    timeInString = String.valueOf(hr) + ":" + String.valueOf(minute) +" AM";
+
+                setHoursAndMinutesInArray(hr, minute, timeInString);
+
+
+                hours = hours + interval[index];
+
+
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     public void setAlaram(){
         int forloopcounter, isBefores = 0;
 
@@ -684,7 +747,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
                     //check to see whether it is everyday or not. If everyday is ticked, then we have to save it for 15 times or if for a number of duration, the the for loop will change accordingly.
                     if (everyday == 1){
-                        forloopcounter = 1;
+                        forloopcounter = 3;
                     }else
                         forloopcounter = Integer.parseInt(duration);
 
@@ -692,6 +755,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                     for(int j = 0; j<forloopcounter; j++) {
                         Impcalendar.add(Calendar.DATE, j);
                         isBefores = startAlarmOnce(Impcalendar, message);
+                        Impcalendar.add(Calendar.DATE, -1*j);
                     }
 
                     saveAlarmRecords(isBefores, forloopcounter, message);
