@@ -671,7 +671,9 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
     public void calculateIntervalTimes(){
         int index = reminderSpinner.getSelectedItemPosition();
         Date intervalTime = null;
+        Date intervalTime24 = null;
         Calendar intervalTimeCov = Calendar.getInstance();
+        Calendar intervalTimein24Hours = Calendar.getInstance();
 
         String time = firstintakeinhours.getText().toString();
         SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
@@ -684,10 +686,14 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         try {
             intervalTime = formatter.parse(time);
             intervalTimeCov.setTime(intervalTime);
-            hours = intervalTimeCov.get(Calendar.HOUR);
-            minute = intervalTimeCov.get(Calendar.MINUTE);
 
             String output = t4hourformat.format(intervalTime);
+            intervalTime24 = t4hourformat.parse(output);
+            intervalTimein24Hours.setTime(intervalTime24);
+
+
+            hours = intervalTimein24Hours.get(Calendar.HOUR_OF_DAY);
+            minute = intervalTimein24Hours.get(Calendar.MINUTE);
 
             counter = 24/interval[index];
 
