@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item   android:id="@+id/myTabs"
+            android:icon="@drawable/ic_alarms"
+            android:title="Reminders"/>
+    <item   android:id="@+id/meds"
+            android:icon="@drawable/ic_med"
+            android:title="Medications"/>
+    <item   android:id="@+id/addAlarm"
+            android:icon="@drawable/ic_add_alarm"
+            android:title="Add Meds"/>
+    <item   android:id="@+id/home"
+            android:icon="@drawable/ic_home"
+            android:title="Home"/>
+</menu>

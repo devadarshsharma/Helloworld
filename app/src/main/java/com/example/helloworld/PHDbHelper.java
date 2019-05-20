@@ -25,7 +25,7 @@ import static android.support.constraint.Constraints.TAG;
 public class PHDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "basicsetup.db";
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = 11;
     private int counter = 0;
     SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm a");
@@ -80,6 +80,7 @@ public class PHDbHelper extends SQLiteOpenHelper {
                 AlarmDetails.COLUMN_DATE + " TEXT  NOT NULL, " +
                 AlarmDetails.COLUMN_STARTDATE + " TEXT NULL, " +
                 AlarmDetails.COLUMN_TABLETS + " INTEGER  NOT NULL, "+
+                AlarmDetails.COLUMN_TABLETUNIT + " TEXT NOT NULL, " +
                 AlarmDetails.COLUMN_ACTIVE + " INTEGER NOT NULL, "+
                 AlarmDetails.COLUMN_TAKEN + " INTEGER NOT NULL," +
                 AlarmDetails.COLUMN_NEXT + " INTEGER  NOT NULL, " +
@@ -220,6 +221,15 @@ public class PHDbHelper extends SQLiteOpenHelper {
 
         return c;
 
+    }
+
+    public Cursor getAllActiveMeds(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        int active = 1;
+        String sql = "SELECT b._ID, b.medName, b.startDate, b.duration, b.everyday, b.xdays, b.xhours, b.active FROM AlarmMaster b " +
+                " ORDER BY b._ID ASC";
+
+        return db.rawQuery(sql, null);
     }
 
 }

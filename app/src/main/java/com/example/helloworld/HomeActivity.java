@@ -30,7 +30,8 @@ public class HomeActivity extends AppCompatActivity {
         pillButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentPill = new Intent(HomeActivity.this, PillReminder.class);
+                //Intent intentPill = new Intent(HomeActivity.this, PillReminder.class);
+                Intent intentPill = new Intent(HomeActivity.this, PillReminderBottNav.class);
                 startActivity(intentPill);
             }
         });

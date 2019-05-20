@@ -52,6 +52,7 @@ public class PHDbClasses {
         public static final String COLUMN_SNOOZETIME= "snoozetime";
         public static final String COLUMN_PENDINGINTENT = "pendingitent";
         public static final String COLUMN_TIMEFORMATTED = "timeformatted";
+        public static final String COLUMN_TABLETUNIT = "tabletunit";
 
     }
 }

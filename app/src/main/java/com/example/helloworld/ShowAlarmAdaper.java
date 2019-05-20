@@ -106,6 +106,7 @@ public class ShowAlarmAdaper extends RecyclerView.Adapter<ShowAlarmAdaper.ShowAl
         String name = mCursor.getString(mCursor.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_MEDNAME));
         String Time = mCursor.getString(mCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TIME));
         String tablet = mCursor.getString(mCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TABLETS));
+        String tabletunit = mCursor.getString(mCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TABLETUNIT));
         String timetaken = mCursor.getString(mCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TIMETAKEN));
         String Date = mCursor.getString(mCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_DATE));
         int taken = mCursor.getInt(mCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TAKEN));
@@ -116,7 +117,7 @@ public class ShowAlarmAdaper extends RecyclerView.Adapter<ShowAlarmAdaper.ShowAl
 
         showAlarmViewHolder.medText.setText(name);
         showAlarmViewHolder.timeText.setText(Time);
-        showAlarmViewHolder.tabletText.setText(tablet);
+        showAlarmViewHolder.tabletText.setText(tablet + " " + tabletunit);
         showAlarmViewHolder.itemView.setTag(ID);
         ids = String.valueOf(ID);
 
@@ -187,11 +188,14 @@ public class ShowAlarmAdaper extends RecyclerView.Adapter<ShowAlarmAdaper.ShowAl
                     mCursor.moveToNext();
                 }
 
-               PillReminder l = PillReminder.instance;
+               //PillReminder l = PillReminder.instance;
+                PillReminderBottNav l = PillReminderBottNav.instance;
                 l.showAlarmDetails(array[i]);
                 //Toast.makeText(mContext, String.valueOf(array[i]), Toast.LENGTH_LONG).show();
             }
         });
+
+
     }
 
     @Override

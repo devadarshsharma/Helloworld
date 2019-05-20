@@ -64,14 +64,18 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
     List<String> timeinString;
     List<Integer> pendingIntents;
     List<Integer> tabletArray;
+    List<String> listOfSpecificDays;
     private SQLiteDatabase mDatabase;
     int requestCode;
     String tabvalue = "1";
     long master_id = 0;
     int isBefore, tabCounter, pendingIntentCounter =  0;
-    Calendar Impcalendar = Calendar.getInstance();
+
     Calendar detailCalendar = Calendar.getInstance();
     int [] interval = {1,2,3,4,6,8,12};
+    private static final String TAG = "PillReminderEntryDetail";
+
+    int specificDaycounter = 0;
 
 
 
@@ -105,6 +109,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         timeinString = new ArrayList<>();
         pendingIntents = new ArrayList<>();
         tabletArray = new ArrayList<>();
+        listOfSpecificDays = new ArrayList<>();
         PHDbHelper phDbHelper = new PHDbHelper(this);
         mDatabase = phDbHelper.getWritableDatabase();
         duration = "";
@@ -191,10 +196,13 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                 if(xhours == 1){
                     calculateIntervalTimes();
                     setAlaram();
+                }else if (specificdays == 1){
+                    setAlarmForSpecificDays();
+                    setAlaram();
                 }else{
                     setAlaram();
                 }
-                Intent intentPill = new Intent(PillReminderEntryDetails.this, PillReminder.class);
+                Intent intentPill = new Intent(PillReminderEntryDetails.this, PillReminderBottNav.class);
                 startActivity(intentPill);
             }
         });
@@ -494,13 +502,13 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
             }else thurcheck.setChecked(false);
             if (fri == 1){
                 fricheck.setChecked(true);
-            }fricheck.setChecked(false);
+            }else fricheck.setChecked(false);
             if (sat == 1){
                 satcheck.setChecked(true);
-            }satcheck.setChecked(false);
+            }else satcheck.setChecked(false);
             if (sun == 1){
                 suncheck.setChecked(true);
-            }suncheck.setChecked(false);
+            }else suncheck.setChecked(false);
 
         }
 
@@ -730,19 +738,52 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
     }
 
+    public void setAlarmForSpecificDays(){
+
+        if (mon == 1){
+            specificDaycounter++;
+            listOfSpecificDays.add("monday");
+        }
+        if (tues == 1){
+            specificDaycounter++;
+            listOfSpecificDays.add("tuesday");
+        }
+        if (wed == 1){
+            specificDaycounter++;
+            listOfSpecificDays.add("wednesday");
+        }
+        if (thurs == 1){
+            listOfSpecificDays.add("thursday");
+            specificDaycounter++;
+        }
+        if (fri == 1){
+            specificDaycounter++;
+            listOfSpecificDays.add("friday");
+        }
+        if (sat == 1) {
+            specificDaycounter++;
+            listOfSpecificDays.add("saturday");
+        }
+        if (sun == 1) {
+            specificDaycounter++;
+            listOfSpecificDays.add("sunday");
+        }
+    }
+
     public void setAlaram(){
         int forloopcounter, isBefores = 0;
 
 
         for(int i = 0; i < hoursArray.size(); i++){
-
+            Calendar Impcalendar = Calendar.getInstance();
 
                 if (!startdate.equals("Today")){
                     Impcalendar.set(Calendar.YEAR, years);
                     Impcalendar.set(Calendar.MONTH, months - 1);
                     Impcalendar.set(Calendar.DAY_OF_MONTH, days);
                 }
-
+                    // rather than adding all those different hours, try adding the intervals, for example, add 6 as in 6 intervals and so on
+                    // also try to instantiate impclendar here.
 
                     int hour = hoursArray.get(i);
                     int min = minuteArray.get(i);
@@ -754,14 +795,41 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                     //check to see whether it is everyday or not. If everyday is ticked, then we have to save it for 15 times or if for a number of duration, the the for loop will change accordingly.
                     if (everyday == 1){
                         forloopcounter = 3;
-                    }else
+                    }
+                    else
                         forloopcounter = Integer.parseInt(duration);
 
                     //detailCalendar = Impcalendar;
-                    for(int j = 0; j<forloopcounter; j++) {
-                        Impcalendar.add(Calendar.DATE, j);
-                        isBefores = startAlarmOnce(Impcalendar, message);
-                        Impcalendar.add(Calendar.DATE, -1*j);
+                    int k = 0;
+                    int p = 0;
+
+
+                    if (specificdays == 1){
+                        do{
+                            String days = "";
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Impcalendar.add(Calendar.DATE, k);
+                            days= format.format(Impcalendar.getTime());
+                            String Day = getDayFromDateString(days,"yyyy-MM-dd HH:mm:ss" );
+                            Log.d(TAG, "Check Claendar Day Value: "+Day);
+                            if(listOfSpecificDays.contains(Day)){
+                                isBefores = startAlarmOnce(Impcalendar, message);
+                                p++;
+                            }
+                            Impcalendar.add(Calendar.DATE, -1*k);
+                            k++;
+                        }while(p < forloopcounter);
+                    }else{
+                        for(int j = 0; j<forloopcounter; j++) {
+                            Impcalendar.add(Calendar.DATE, j);
+
+                            isBefores = startAlarmOnce(Impcalendar, message);
+                            long milies = Impcalendar.getTimeInMillis();
+                            Log.d(TAG, "setAlaram: before subtraction : " +milies);
+                            Impcalendar.add(Calendar.DATE, -1*j);
+                            milies = Impcalendar.getTimeInMillis();
+                            Log.d(TAG, "setAlaram: after subtraction : " +milies);
+                        }
                     }
 
                     saveAlarmRecords(isBefores, forloopcounter, message);
@@ -771,6 +839,31 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         }
             tabCounter = 0;
 
+    }
+
+    public static String getDayFromDateString(String stringDate,String dateTimeFormat)
+    {
+        String[] daysArray = new String[] {"sunday","monday","tuesday","wednesday","thursday","friday","saturday"};
+        String day = "";
+
+        int dayOfWeek =0;
+        //dateTimeFormat = yyyy-MM-dd HH:mm:ss
+        SimpleDateFormat formatter = new SimpleDateFormat(dateTimeFormat);
+        Date date;
+        try {
+            date = formatter.parse(stringDate);
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            dayOfWeek = c.get(Calendar.DAY_OF_WEEK)-1;
+            if (dayOfWeek < 0) {
+                dayOfWeek += 7;
+            }
+            day = daysArray[dayOfWeek];
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return day;
     }
 
     public int startAlarmOnce(Calendar c, String textTime){
@@ -827,6 +920,8 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         String strDate = "";
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
+        int q = 0;
+        int w = 0;
 
         if (master_id == 0) {
             ContentValues cv = new ContentValues();
@@ -860,68 +955,155 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         }
 
         ContentValues ad = new ContentValues();
-        for (int i = 0; i<forloopcounter; i++){
-            Date timeformatted = null;
-            Date startDateFormatted = null;
-            int times = 0;
-            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
-            try {
-                timeformatted = formatter.parse(message);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_ALARMMASTERID, master_id);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_TIME, message);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_TIMEFORMATTED, timeformatted.getTime());
-            if(startdate.equals("Today") && isBefore == 0){
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DATE, i);
-                strDate =mdformat.format(calendar.getTime());
-                ad.put(PHDbClasses.AlarmDetails.COLUMN_DATE, strDate);
-            }else if(startdate.equals("Today") && isBefore == 1){
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(calendar.DATE, 1+i);
-                strDate =mdformat.format(calendar.getTime());
-                ad.put(PHDbClasses.AlarmDetails.COLUMN_DATE, strDate);
-            }
-            else if (isBefore == 1) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(calendar.DATE, 1);
-                calendar.add(calendar.DATE, i);
-                strDate =mdformat.format(calendar.getTime());
-                ad.put(PHDbClasses.AlarmDetails.COLUMN_DATE, strDate);
-            }else{
+        if(specificdays == 0){
+            for (int i = 0; i<forloopcounter; i++){
+                Date timeformatted = null;
+                Date startDateFormatted = null;
+                int times = 0;
+                SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
                 try {
-                    startDateFormatted = mdformat.parse(startdate);
-                    detailCalendar.setTime(startDateFormatted);
-                    detailCalendar.add(Calendar.DATE, i);
-                    strDate =mdformat.format(detailCalendar.getTime());
-                    ad.put(PHDbClasses.AlarmDetails.COLUMN_DATE, strDate);
+                    timeformatted = formatter.parse(message);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-            }
+                String days = "";
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_TABLETS, tabletArray.get(tabCounter));
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_ACTIVE, 1);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_TAKEN, 0);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_NEXT, 1);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_SKIPPED, 0);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_SNOOZE, 0);
-            ad.put(PHDbClasses.AlarmDetails.COLUMN_PENDINGINTENT, pendingIntents.get(pendingIntentCounter));
-            mDatabase.insert(PHDbClasses.AlarmDetails.TABLE_NAME, null, ad);
-            pendingIntentCounter++;
+                if(startdate.equals("Today") && isBefore == 0){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, i);
+                    strDate =mdformat.format(calendar.getTime());
 
+                    days= format.format(calendar.getTime());
+
+                }else if(startdate.equals("Today") && isBefore == 1){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(calendar.DATE, 1+i);
+                    strDate =mdformat.format(calendar.getTime());
+
+                    days= format.format(calendar.getTime());
+
+                }
+                else if (isBefore == 1) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(calendar.DATE, 1);
+                    calendar.add(calendar.DATE, i);
+                    strDate =mdformat.format(calendar.getTime());
+
+                    days= format.format(calendar.getTime());
+
+                }else{
+                    try {
+                        startDateFormatted = mdformat.parse(startdate);
+                        detailCalendar.setTime(startDateFormatted);
+                        detailCalendar.add(Calendar.DATE, i);
+                        strDate =mdformat.format(detailCalendar.getTime());
+
+                        days= format.format(detailCalendar.getTime());
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                String Day = getDayFromDateString(days,"yyyy-MM-dd HH:mm:ss" );
+
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_ALARMMASTERID, master_id);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_TIME, message);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_TIMEFORMATTED, timeformatted.getTime());
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_DATE, strDate);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_TABLETS, tabletArray.get(tabCounter));
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_ACTIVE, 1);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_TAKEN, 0);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_NEXT, 1);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_SKIPPED, 0);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_SNOOZE, 0);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_TABLETUNIT, units);
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_PENDINGINTENT, pendingIntents.get(pendingIntentCounter));
+                mDatabase.insert(PHDbClasses.AlarmDetails.TABLE_NAME, null, ad);
+                pendingIntentCounter++;
         }
 
 
+        }else if (specificdays == 1){
+            do {
+                Date timeformatted = null;
+                Date startDateFormatted = null;
+                int times = 0;
+                SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+                try {
+                    timeformatted = formatter.parse(message);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                String days = "";
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                if(startdate.equals("Today") && isBefore == 0){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, w);
+                    strDate =mdformat.format(calendar.getTime());
+
+                    days= format.format(calendar.getTime());
+
+                }else if(startdate.equals("Today") && isBefore == 1){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(calendar.DATE, 1+w);
+                    strDate =mdformat.format(calendar.getTime());
+
+                    days= format.format(calendar.getTime());
+
+                }
+                else if (isBefore == 1) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(calendar.DATE, 1);
+                    calendar.add(calendar.DATE, w);
+                    strDate =mdformat.format(calendar.getTime());
+
+                    days= format.format(calendar.getTime());
+
+                }else{
+                    try {
+                        startDateFormatted = mdformat.parse(startdate);
+                        detailCalendar.setTime(startDateFormatted);
+                        detailCalendar.add(Calendar.DATE, w);
+                        strDate =mdformat.format(detailCalendar.getTime());
+
+                        days= format.format(detailCalendar.getTime());
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                String Day = getDayFromDateString(days,"yyyy-MM-dd HH:mm:ss" );
+
+                    if (listOfSpecificDays.contains(Day)){
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_ALARMMASTERID, master_id);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_TIME, message);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_TIMEFORMATTED, timeformatted.getTime());
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_DATE, strDate);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_TABLETS, tabletArray.get(tabCounter));
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_ACTIVE, 1);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_TAKEN, 0);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_TABLETUNIT, units);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_NEXT, 1);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_SKIPPED, 0);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_SNOOZE, 0);
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_PENDINGINTENT, pendingIntents.get(pendingIntentCounter));
+                        mDatabase.insert(PHDbClasses.AlarmDetails.TABLE_NAME, null, ad);
+                        pendingIntentCounter++;
+                        q++;
+
+                    }
 
 
-
+                w++;
+            }while (q < forloopcounter);
+        }
     }
-
-
-
 }
