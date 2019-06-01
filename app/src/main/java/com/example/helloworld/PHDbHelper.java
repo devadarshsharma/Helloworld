@@ -25,7 +25,7 @@ import static android.support.constraint.Constraints.TAG;
 public class PHDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "basicsetup.db";
-    public static final int DATABASE_VERSION = 11;
+    public static final int DATABASE_VERSION = 12;
     private int counter = 0;
     SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm a");
@@ -78,7 +78,7 @@ public class PHDbHelper extends SQLiteOpenHelper {
                 AlarmDetails.COLUMN_TIME + " TEXT  NOT NULL, " +
                 AlarmDetails.COLUMN_TIMEFORMATTED + " LONG  NOT NULL, "+
                 AlarmDetails.COLUMN_DATE + " TEXT  NOT NULL, " +
-                AlarmDetails.COLUMN_STARTDATE + " TEXT NULL, " +
+                AlarmDetails.COLUMN_DATEINMILLIS + " LONG NULL, " +
                 AlarmDetails.COLUMN_TABLETS + " INTEGER  NOT NULL, "+
                 AlarmDetails.COLUMN_TABLETUNIT + " TEXT NOT NULL, " +
                 AlarmDetails.COLUMN_ACTIVE + " INTEGER NOT NULL, "+
@@ -230,6 +230,43 @@ public class PHDbHelper extends SQLiteOpenHelper {
                 " ORDER BY b._ID ASC";
 
         return db.rawQuery(sql, null);
+    }
+
+    public Cursor getAlarmMasterID(long id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "SELECT alarmMasterID FROM AlarmDetails  WHERE _id " + "=" + "'"+id+"'";
+
+        return  db.rawQuery(sql, null);
+    }
+
+    public void deleteFromAlarmDetails(long id, long date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(AlarmDetails.TABLE_NAME, AlarmDetails.COLUMN_ALARMMASTERID +"= ? and " + AlarmDetails.COLUMN_DATEINMILLIS +"> ?", new String[] {String.valueOf(id), String.valueOf(date)});
+    }
+
+    public Cursor fetchAllMasterDetails(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String MasterDQL = "SELECT * FROM AlarmMaster WHERE _id " + "=" + "'"+id+"'";
+        return db.rawQuery(MasterDQL, null);
+    }
+
+    public Cursor fetchAllAlarmDetails(int masterID){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String MasterDQL = "SELECT DISTINCT a.time, a.timeformatted, a.tablets, a.tabletunit "+
+                           "FROM AlarmDetails a INNER JOIN AlarmMaster b on a.alarmMasterID = b._id "+
+                           "WHERE b.xhours is null and a.alarmMasterID " + "=" + "'"+masterID+"'";
+        return db.rawQuery(MasterDQL, null);
+    }
+
+    public void updateAllAlarmDetailsToInactive(int masterID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(AlarmDetails.COLUMN_ACTIVE, 0);
+
+        db.update(AlarmDetails.TABLE_NAME, cv, "_id="+masterID, null);
     }
 
 }

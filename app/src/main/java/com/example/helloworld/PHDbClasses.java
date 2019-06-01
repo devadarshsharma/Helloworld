@@ -38,7 +38,7 @@ public class PHDbClasses {
         public static final String COLUMN_ALARMMASTERID= "alarmMasterID";
         public static final String COLUMN_TIME= "time";
         public static final String COLUMN_DATE= "date";
-        public static final String COLUMN_STARTDATE= "startDate";
+        public static final String COLUMN_DATEINMILLIS= "dateinmillis";
         public static final String COLUMN_TABLETS= "tablets";
         public static final String COLUMN_ACTIVE= "active";
         public static final String COLUMN_TAKEN= "taken";

@@ -71,6 +71,7 @@ public class PillReminderEntry extends AppCompatActivity {
                 Intent i = new Intent(PillReminderEntry.this, PillReminderEntryDetails.class);
                 i.putExtra("Units", item_selected);
                 i.putExtra("MedName", nameEdit.getText().toString());
+                i.putExtra("FromWhere", "PillReminderEntry");
                 startActivity(i);
             }
         });

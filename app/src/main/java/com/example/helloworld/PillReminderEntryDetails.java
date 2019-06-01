@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -59,23 +60,51 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
     private int hour, minut;
     private Button save;
     private IntroManager introManager;
+    private LinearLayout timeRecyclerview;
     List<Integer> hoursArray ;
     List<Integer> minuteArray;
     List<String> timeinString;
     List<Integer> pendingIntents;
     List<Integer> tabletArray;
     List<String> listOfSpecificDays;
+    List<Long> listOfDatesInMillis;
     private SQLiteDatabase mDatabase;
     int requestCode;
     String tabvalue = "1";
     long master_id = 0;
+    long mastID = 0;
+    long mastIDs = 0;
     int isBefore, tabCounter, pendingIntentCounter =  0;
 
     Calendar detailCalendar = Calendar.getInstance();
     int [] interval = {1,2,3,4,6,8,12};
     private static final String TAG = "PillReminderEntryDetail";
+    private int fromWhere = 0;
+    private int idForEdit = 0;
 
     int specificDaycounter = 0;
+    PHDbHelper phDbHelper;
+
+    Long MasterID;
+    String masterMedName = "";
+    String masterCompany = "";
+    String masterIntakeAdvise = "";
+    String masterStartDate = "";
+    int masterDuration = 0;
+    int masterEveryday = 0;
+    int masterXdays = 0;
+    int masterXhours = 0;
+    String masterFirstIntake = "";
+    int masterActive = 0;
+
+    String detailTime = "";
+    long detailTimeFormatted  = 0;
+    int detailTablets = 0;
+    String detailTabUnits= "";
+
+    Intent getstuff = getIntent();
+    View mview = null;
+    LinearLayout weekdays = null;
 
 
 
@@ -101,6 +130,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         FrequncyDet = (TextView) findViewById(R.id.FrequncyDet);
         DosageDetail = (TextView) findViewById(R.id.DosageDetail);
         linearlayoutmeds = (LinearLayout) findViewById(R.id.linearlayoutmeds);
+        timeRecyclerview = findViewById(R.id.ReminderTimes);
         save = (Button) findViewById(R.id.SavereminderDetails);
         startdate = "Today";
         introManager = new IntroManager(this);
@@ -110,23 +140,27 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         pendingIntents = new ArrayList<>();
         tabletArray = new ArrayList<>();
         listOfSpecificDays = new ArrayList<>();
+        listOfDatesInMillis = new ArrayList<>();
         PHDbHelper phDbHelper = new PHDbHelper(this);
         mDatabase = phDbHelper.getWritableDatabase();
         duration = "";
-
-
-        Intent getstuff = getIntent();
-        MedName.setText(getstuff.getStringExtra("MedName"));
-        units = getstuff.getStringExtra("Units");
-        UnitName.setText(units);
-
-
-        ArrayAdapter<CharSequence> adapter;
         instance = this;
         decision = 0;
         tab = "1";
         everyday = 1;
         xdays=0;
+
+        getstuff = getIntent();
+        MedName.setText(getstuff.getStringExtra("MedName"));
+        units = getstuff.getStringExtra("Units");
+        UnitName.setText(units);
+        String lidForEdit = getstuff.getStringExtra("IDforEdit");
+
+
+
+        ArrayAdapter<CharSequence> adapter;
+
+        phDbHelper = new PHDbHelper(this);
 
         buildRecyclerView();
 
@@ -151,6 +185,10 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
             }
         });
+        if(getstuff.getStringExtra("FromWhere").equals("Edit")){
+            fromWhere = 1;
+            letsEdit(Integer.parseInt(lidForEdit));
+        }
         Time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,6 +231,10 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(fromWhere == 1)
+                    EditTheTabs();
+
                 if(xhours == 1){
                     calculateIntervalTimes();
                     setAlaram();
@@ -216,7 +258,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
         position = reminderItems.size();
         Toast.makeText(PillReminderEntryDetails.this, Integer.toString(position), Toast.LENGTH_SHORT).show();
-        ReminderTimesChangeOrInsert(hourOfDay, minute, message);
+        ReminderTimesChangeOrInsert(hourOfDay, minute, message, 1);
 
     }
 
@@ -455,12 +497,12 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
     public void openFrequencyDialog(){
         AlertDialog.Builder mtabDialog = new AlertDialog.Builder(PillReminderEntryDetails.this);
-        final View mview = getLayoutInflater().inflate(R.layout.dialog_frequencyofintake, null);
+        mview = getLayoutInflater().inflate(R.layout.dialog_frequencyofintake, null);
         mtabDialog.setTitle("Frequency Details");
         final RadioButton xtimesday = (RadioButton) mview.findViewById(R.id.xtimesaday);
         final RadioButton everyxhours = (RadioButton) mview.findViewById(R.id.everyxhours);
         final RadioButton specificdaysofweek = (RadioButton) mview.findViewById(R.id.specificdaysofweek);
-        final LinearLayout weekdays = (LinearLayout) mview.findViewById(R.id.weekdays);
+        weekdays = (LinearLayout) mview.findViewById(R.id.weekdays);
 
         final CheckBox moncheck = (CheckBox) mview.findViewById(R.id.mon);
         final CheckBox tuecheck = (CheckBox) mview.findViewById(R.id.tues);
@@ -511,12 +553,16 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
             }else suncheck.setChecked(false);
 
         }
+        if(getstuff.getStringExtra("FromWhere").equals("Edit")){
 
+
+        }
 
         xtimesday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Time.setVisibility(mview.VISIBLE);
+                timeRecyclerview.setVisibility(mview.VISIBLE);
                 weekdays.setVisibility(mview.GONE);
                 Frequency.setVisibility(View.GONE);
                 xtimesaday =1;
@@ -530,6 +576,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
             @Override
             public void onClick(View v) {
                 Time.setVisibility(mview.GONE);
+                timeRecyclerview.setVisibility(mview.GONE);
                 weekdays.setVisibility(mview.GONE);
                 Frequency.setVisibility(View.VISIBLE);
                 xhours = 1;
@@ -543,6 +590,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
             @Override
             public void onClick(View v) {
                 Time.setVisibility(mview.VISIBLE);
+                timeRecyclerview.setVisibility(mview.VISIBLE);
                 weekdays.setVisibility(mview.VISIBLE);
                 Frequency.setVisibility(View.GONE);
                 xhours = 0;
@@ -606,11 +654,11 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         Toast.makeText(getBaseContext(), "called from service", Toast.LENGTH_LONG).show();
     }
 
-    public void insertReminderTimes(int position, int hourOfDay, int minute, String message){
-        reminderItems.add(position,new AddReminderItems(R.drawable.ic_cancel, textTime, "1 Tablet"));
+    public void insertReminderTimes(int position, int hourOfDay, int minute, String message, int tab){
+        reminderItems.add(position,new AddReminderItems(R.drawable.ic_cancel, textTime, String.valueOf(tab)+" "+ units));
         setHoursAndMinutesInArray(hourOfDay, minute, message);
         adapter.notifyItemInserted(position);
-        tabletArray.add(1);
+        tabletArray.add(tab);
     }
 
     public void RemoveReminderTimes(int position){
@@ -663,9 +711,9 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         });
     }
 
-    public void ReminderTimesChangeOrInsert( int hourOfDay, int minute, String message){
+    public void ReminderTimesChangeOrInsert( int hourOfDay, int minute, String message, int tab){
         if(decision == 0){
-            insertReminderTimes(position, hourOfDay, minute, message);
+            insertReminderTimes(position, hourOfDay, minute, message, tab);
 
         }else if (decision == 2){
             firstintakeinhours.setText(textTime);
@@ -836,6 +884,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                     isBefores = 0;
                     isBefore = 0;
                     tabCounter++;
+                    listOfDatesInMillis.clear();
         }
             tabCounter = 0;
 
@@ -883,6 +932,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
         }
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        listOfDatesInMillis.add(c.getTimeInMillis());
         return isBefore;
     }
 
@@ -947,6 +997,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
             cv.put(PHDbClasses.AlarmMaster.COLUMN_EVERYDAY, everyday);
             cv.put(PHDbClasses.AlarmMaster.COLUMN_XDAY, xdays);
             cv.put(PHDbClasses.AlarmMaster.COLUMN_XHOURS, remindSpinnerinString);
+            cv.put(PHDbClasses.AlarmMaster.COLUMN_FIRSTINTAKE, firstintakeinhours.getText().toString());
             //lets wait for first intake one to come
 
             cv.put(PHDbClasses.AlarmMaster.COLUMN_ACTIVE, 1);
@@ -1008,7 +1059,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
 
                 }
 
-                String Day = getDayFromDateString(days,"yyyy-MM-dd HH:mm:ss" );
+                //String Day = getDayFromDateString(days,"yyyy-MM-dd HH:mm:ss" );
 
                 ad.put(PHDbClasses.AlarmDetails.COLUMN_ALARMMASTERID, master_id);
                 ad.put(PHDbClasses.AlarmDetails.COLUMN_TIME, message);
@@ -1022,6 +1073,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                 ad.put(PHDbClasses.AlarmDetails.COLUMN_SNOOZE, 0);
                 ad.put(PHDbClasses.AlarmDetails.COLUMN_TABLETUNIT, units);
                 ad.put(PHDbClasses.AlarmDetails.COLUMN_PENDINGINTENT, pendingIntents.get(pendingIntentCounter));
+                ad.put(PHDbClasses.AlarmDetails.COLUMN_DATEINMILLIS, listOfDatesInMillis.get(i));
                 mDatabase.insert(PHDbClasses.AlarmDetails.TABLE_NAME, null, ad);
                 pendingIntentCounter++;
         }
@@ -1095,6 +1147,7 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
                         ad.put(PHDbClasses.AlarmDetails.COLUMN_SKIPPED, 0);
                         ad.put(PHDbClasses.AlarmDetails.COLUMN_SNOOZE, 0);
                         ad.put(PHDbClasses.AlarmDetails.COLUMN_PENDINGINTENT, pendingIntents.get(pendingIntentCounter));
+                        ad.put(PHDbClasses.AlarmDetails.COLUMN_DATEINMILLIS, listOfDatesInMillis.get(q));
                         mDatabase.insert(PHDbClasses.AlarmDetails.TABLE_NAME, null, ad);
                         pendingIntentCounter++;
                         q++;
@@ -1106,4 +1159,174 @@ public class PillReminderEntryDetails extends AppCompatActivity implements  Time
             }while (q < forloopcounter);
         }
     }
+
+    public void letsEdit(int idForEdit){
+
+        //also remember to check for startdate, best to make calendar object using the start date since it is recorded in the first instance.
+        phDbHelper = new PHDbHelper(this);
+        Cursor Cursorid = phDbHelper.getAlarmMasterID(idForEdit);
+        Cursorid.moveToFirst();
+        long id =  Cursorid.getLong(Cursorid.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_ALARMMASTERID));
+        Cursor MasterDetails = phDbHelper.fetchAllMasterDetails((int)id);
+        MasterDetails.moveToFirst();
+
+         MasterID = MasterDetails.getLong(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster._ID));
+         masterMedName = MasterDetails.getString(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_MEDNAME));
+         masterCompany = MasterDetails.getString(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_COMPANY));
+         masterIntakeAdvise = MasterDetails.getString(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_INTAKEADVISE));
+         masterStartDate = MasterDetails.getString(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_STARTDATE));
+         masterDuration = MasterDetails.getInt(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_DURATION));
+         masterEveryday = MasterDetails.getInt(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_EVERYDAY));
+         masterXdays = MasterDetails.getInt(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_XDAY));
+         masterXhours = MasterDetails.getInt(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_XHOURS));
+         masterFirstIntake = MasterDetails.getString(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_FIRSTINTAKE));
+         masterActive = MasterDetails.getInt(MasterDetails.getColumnIndex(PHDbClasses.AlarmMaster.COLUMN_ACTIVE));
+
+         id = MasterID;
+         mastIDs = MasterID;
+         Cursor DetailCursor = phDbHelper.fetchAllAlarmDetails((int)id);
+         DetailCursor.moveToFirst();
+
+         MedName.setText(masterMedName);
+         UnitName.setText("Tablet");
+         company = masterCompany;
+
+         if (masterIntakeAdvise == null){
+             mealdecison = 1;
+         }else if (masterIntakeAdvise.equals("Before Meal")){
+             mealdecison = 2;
+         }else if (masterIntakeAdvise.equals("With Meal")){
+             mealdecison = 3;
+         }else if (masterIntakeAdvise.equals("After Meal")){
+             mealdecison = 4;
+         }else{
+             customText = intakeadvise;
+             mealdecison = 5;
+         }
+
+         if(masterDuration != 0){
+             xdays = 1;
+             everyday = 0;
+             DurationDet.setText("For "+String.valueOf(masterDuration)+ " days");
+             duration = String.valueOf(masterDuration);
+         }
+
+
+         startdate = masterStartDate;
+
+         if(masterXdays == 1){
+             Time.setVisibility(mview.VISIBLE);
+             Frequency.setVisibility(View.GONE);
+             xtimesaday =1;
+             xhours = 0;
+             specificdays = 0;
+             FrequncyDet.setText("Daily");
+         }
+
+         if(masterXhours != 0){
+             Time.setVisibility(mview.GONE);
+             Frequency.setVisibility(View.VISIBLE);
+             xhours = 1;
+             xtimesaday =0;
+             specificdays = 0;
+             FrequncyDet.setText("Daily, every X hours");
+             Toast.makeText(this, "master x hours", Toast.LENGTH_SHORT).show();
+             firstintakeinhours.setText(masterFirstIntake);
+             int position = 0;
+             int i =0;
+
+             while(i < interval.length){
+                 if(interval[i] == masterXhours){
+                     position = i;
+                     i++;
+                 }
+                 else
+                     i++;
+             }
+
+             reminderSpinner.setSelection(position);
+         }else
+         {
+             while (!DetailCursor.isAfterLast()) {
+                 detailTime = DetailCursor.getString(DetailCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TIME));
+                 detailTimeFormatted = DetailCursor.getLong(DetailCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TIMEFORMATTED));
+                 detailTablets = DetailCursor.getInt(DetailCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TABLETS));
+                 units = DetailCursor.getString(DetailCursor.getColumnIndex(PHDbClasses.AlarmDetails.COLUMN_TABLETUNIT));
+                 textTime = detailTime;
+
+                 Calendar calendar = Calendar.getInstance();
+                 calendar.setTimeInMillis(detailTimeFormatted);
+
+                 position = reminderItems.size();
+                 ReminderTimesChangeOrInsert(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), detailTime, detailTablets);
+
+                 DetailCursor.moveToNext();
+             }
+
+         }
+
+         // we have to first update all the master thing
+        //den delete the details one and add the new ones in it.
+
+    }
+
+    public void EditTheTabs(){
+        phDbHelper.updateAllAlarmDetailsToInactive((int)mastIDs);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd");
+
+        phDbHelper.deleteFromAlarmDetails(mastIDs, calendar.getTimeInMillis());
+
+        String strDate = "";
+        Calendar cal = Calendar.getInstance();
+
+        ContentValues cv = new ContentValues();
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_MEDNAME, MedName.getText().toString());
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_COMPANY, company);
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_INTAKEADVISE, intakeadvise);
+        if(startdate.equals("Today") && isBefore == 0){
+            strDate =mdformat.format(cal.getTime());
+            cv.put(PHDbClasses.AlarmMaster.COLUMN_STARTDATE, strDate);
+        }else if(startdate.equals("Today") && isBefore == 1){
+            cal.add(cal.DATE, 1);
+            strDate =mdformat.format(cal.getTime());
+            cv.put(PHDbClasses.AlarmMaster.COLUMN_STARTDATE, strDate);
+        }
+        else if (isBefore == 1) {
+            cal.add(cal.DATE, 1);
+            strDate =mdformat.format(cal.getTime());
+            cv.put(PHDbClasses.AlarmMaster.COLUMN_STARTDATE, strDate);
+        }else
+            cv.put(PHDbClasses.AlarmMaster.COLUMN_STARTDATE, startdate);
+        if (!duration.equals(""))
+            cv.put(PHDbClasses.AlarmMaster.COLUMN_DURATION, Integer.valueOf(duration));
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_EVERYDAY, everyday);
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_XDAY, xdays);
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_XHOURS, remindSpinnerinString);
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_FIRSTINTAKE, firstintakeinhours.getText().toString());
+        //lets wait for first intake one to come
+
+        cv.put(PHDbClasses.AlarmMaster.COLUMN_ACTIVE, 1);
+
+        mDatabase.update(PHDbClasses.AlarmMaster.TABLE_NAME, cv, "_id="+mastIDs, null);
+
+        master_id = mastIDs;
+
+        Date date = null;
+        try {
+            date = mdformat.parse(startdate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        years = c.get(Calendar.YEAR);
+        months = c.get(Calendar.MONTH) + 1;
+        days = c.get(Calendar.DAY_OF_MONTH);
+
+
+    }
 }
+
+/// we have to handle specific days and dosage......

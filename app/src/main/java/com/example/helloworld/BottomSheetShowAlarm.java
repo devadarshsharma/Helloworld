@@ -24,6 +24,8 @@ public class BottomSheetShowAlarm extends BottomSheetDialogFragment {
         ImageButton btn_skip = v.findViewById(R.id.btn_skip);
         ImageButton confirm = v.findViewById(R.id.btn_confirm);
         ImageButton snooze = v.findViewById(R.id.btn_snooze);
+        ImageButton edit = v.findViewById(R.id.img1);
+        ImageButton delete = v.findViewById(R.id.img2);
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +50,23 @@ public class BottomSheetShowAlarm extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mlistener.onButtonClicked("Edit");
+                dismiss();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mlistener.onButtonClicked("Delete");
+                dismiss();
+            }
+        });
+
 
         return v;
     }
